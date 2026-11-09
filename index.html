@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101914">
+<title>ASCII ROGUE — 小さな迷宮</title>
+<link rel="stylesheet" href="style.css">
+<main>
+  <header><span class="eyebrow">A TINY DUNGEON / 01</span><h1>ASCII ROGUE<span>小さな迷宮</span></h1></header>
+  <p class="intro"><b>@</b> を動かして、出口 <b>&gt;</b> を目指そう。</p>
+  <section class="terminal" aria-label="迷宮">
+    <div class="bar"><span>FLOOR 01</span><span id="steps">0 STEPS</span></div>
+    <pre id="map" role="img" aria-label="迷宮マップ"></pre>
+    <p id="status" role="status" aria-live="polite">出口を探して探索開始。</p>
+  </section>
+  <p class="legend"><span><b>@</b> あなた</span><span><b>#</b> 壁</span><span><b>.</b> 通路</span><span><b>&gt;</b> 出口</span></p>
+  <nav class="pad" aria-label="移動ボタン">
+    <button data-dir="up" aria-label="上へ">↑</button>
+    <button data-dir="left" aria-label="左へ">←</button>
+    <span aria-hidden="true">@</span>
+    <button data-dir="right" aria-label="右へ">→</button>
+    <button data-dir="down" aria-label="下へ">↓</button>
+  </nav>
+  <button id="restart" class="restart">↻ リスタート</button>
+  <footer>タッチボタン / キーボードの矢印キー<br>壁は通れません。何度でも挑戦できます。</footer>
+</main>
+<script src="game.js"></script>
+</html>
