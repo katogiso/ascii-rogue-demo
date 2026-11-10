@@ -1,16 +1,26 @@
 'use strict';
 (() => {
-  const maze = [
-    '###############',
-    '#...#.........#',
-    '#.#.#.#####.#.#',
-    '#.#...#...#.#.#',
-    '#.#####.#.#.#.#',
-    '#.......#...#.#',
-    '###.#######.#.#',
-    '#...#.......#>#',
-    '###############'
-  ];
+  let maze;
+  // Carve a connected maze by visiting every odd-coordinate cell.
+  function generateMaze() {
+    const grid = Array.from({ length: 9 }, () => Array(15).fill('#'));
+    const stack = [[1, 1]];
+    grid[1][1] = '.';
+    while (stack.length) {
+      const [cx, cy] = stack[stack.length - 1];
+      const choices = Object.values(directions).filter(([dx, dy]) => {
+        const nx = cx + dx * 2, ny = cy + dy * 2;
+        return nx > 0 && nx < 14 && ny > 0 && ny < 8 && grid[ny][nx] === '#';
+      });
+      if (!choices.length) { stack.pop(); continue; }
+      const [dx, dy] = choices[Math.floor(Math.random() * choices.length)];
+      grid[cy + dy][cx + dx] = '.';
+      grid[cy + dy * 2][cx + dx * 2] = '.';
+      stack.push([cx + dx * 2, cy + dy * 2]);
+    }
+    grid[7][13] = '>';
+    return grid.map(row => row.join(''));
+  }
   const directions = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
   const keys = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
   const map = document.querySelector('#map');
@@ -48,8 +58,9 @@
   }
 
   function restart() {
+    maze = generateMaze();
     x = 1; y = 1; steps = 0; cleared = false;
-    status.textContent = '出口を探して探索開始。';
+    status.textContent = '新しい迷宮！出口を探そう。';
     render();
   }
   document.querySelectorAll('[data-dir]').forEach(button => {
