@@ -1,16 +1,17 @@
 'use strict';
 (() => {
-  let maze;
+  let maze, goalX, goalY;
+  const sizes = { normal: [15, 9], large: [30, 18] };
   // Carve a connected maze by visiting every odd-coordinate cell.
-  function generateMaze() {
-    const grid = Array.from({ length: 9 }, () => Array(15).fill('#'));
+  function generateMaze(width, height) {
+    const grid = Array.from({ length: height }, () => Array(width).fill('#'));
     const stack = [[1, 1]];
     grid[1][1] = '.';
     while (stack.length) {
       const [cx, cy] = stack[stack.length - 1];
       const choices = Object.values(directions).filter(([dx, dy]) => {
         const nx = cx + dx * 2, ny = cy + dy * 2;
-        return nx > 0 && nx < 14 && ny > 0 && ny < 8 && grid[ny][nx] === '#';
+        return nx > 0 && nx < width - 1 && ny > 0 && ny < height - 1 && grid[ny][nx] === '#';
       });
       if (!choices.length) { stack.pop(); continue; }
       const [dx, dy] = choices[Math.floor(Math.random() * choices.length)];
@@ -18,12 +19,15 @@
       grid[cy + dy * 2][cx + dx * 2] = '.';
       stack.push([cx + dx * 2, cy + dy * 2]);
     }
-    grid[7][13] = '>';
+    grid[goalY][goalX] = '>';
     return grid.map(row => row.join(''));
   }
   const directions = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
   const keys = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
   const map = document.querySelector('#map');
+  const view = document.querySelector('#map-view');
+  const size = document.querySelector('#maze-size');
+  const swipe = document.querySelector('#swipe');
   const status = document.querySelector('#status');
   let x, y, steps, shortestSteps, cleared;
 
@@ -58,6 +62,32 @@
     return `CLEAR! ${steps}歩（最短 ${shortestSteps}歩・差 ${extraSteps}歩） ${feedback}`;
   }
 
+  function followPlayer() {
+    const player = map.querySelector('.player');
+    const frame = view.getBoundingClientRect();
+    const cell = player.getBoundingClientRect();
+    const marginX = Math.min(cell.width * 2, view.clientWidth / 4);
+    const marginY = Math.min(cell.height * 2, view.clientHeight / 4);
+    const left = cell.left - frame.left;
+    const top = cell.top - frame.top;
+
+    if (left < marginX) {
+      view.scrollLeft += left - marginX;
+    } else if (left + cell.width > view.clientWidth - marginX) {
+      view.scrollLeft += left + cell.width - view.clientWidth + marginX;
+    }
+    if (top < marginY) {
+      view.scrollTop += top - marginY;
+    } else if (top + cell.height > view.clientHeight - marginY) {
+      view.scrollTop += top + cell.height - view.clientHeight + marginY;
+    }
+  }
+
+  function updateSwipe() {
+    view.classList.toggle('swipe', swipe.checked);
+    if (!swipe.checked) followPlayer();
+  }
+
   function render() {
     map.replaceChildren();
     maze.forEach((row, rowY) => {
@@ -70,7 +100,7 @@
       });
       if (rowY < maze.length - 1) map.append('\n');
     });
-    map.setAttribute('aria-label', `迷宮マップ。あなたは左から${x + 1}、上から${y + 1}。出口は左から14、上から8。`);
+    map.setAttribute('aria-label', `迷宮マップ。あなたは左から${x + 1}、上から${y + 1}。出口は左から${goalX + 1}、上から${goalY + 1}。`);
     document.querySelector('#steps').textContent = `${steps} STEPS`;
   }
 
@@ -86,23 +116,35 @@
     cleared = next === '>';
     status.textContent = cleared ? clearMessage() : '出口 > を目指そう。';
     render();
+    followPlayer();
   }
 
   function restart() {
-    maze = generateMaze();
+    const [width, height] = sizes[size.value];
+    // The carved rooms use odd coordinates, including the exit.
+    goalX = width % 2 === 0 ? width - 3 : width - 2;
+    goalY = height % 2 === 0 ? height - 3 : height - 2;
+    maze = generateMaze(width, height);
     x = 1; y = 1; steps = 0; cleared = false;
     shortestSteps = shortestDistance(x, y);
     status.textContent = '新しい迷宮！出口を探そう。';
     render();
+    view.scrollLeft = 0;
+    view.scrollTop = 0;
   }
+  size.addEventListener('change', restart);
+  swipe.addEventListener('change', updateSwipe);
+  window.addEventListener('resize', followPlayer);
   document.querySelectorAll('[data-dir]').forEach(button => {
     button.addEventListener('click', () => move(button.dataset.dir));
   });
   window.addEventListener('keydown', event => {
+    if (event.target === size || event.target === swipe) return;
     if (!keys[event.key] || event.altKey || event.ctrlKey || event.metaKey) return;
     event.preventDefault();
     move(keys[event.key]);
   });
   document.querySelector('#restart').addEventListener('click', restart);
   restart();
+  updateSwipe();
 })();

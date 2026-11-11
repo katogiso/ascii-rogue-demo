@@ -4,13 +4,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#101914">
 <title>ASCII ROGUE — 小さな迷宮</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=large-1">
 <main>
   <header><span class="eyebrow">A TINY DUNGEON / 01</span><h1>ASCII ROGUE<span>小さな迷宮</span></h1></header>
   <p class="intro"><b>@</b> を動かして、出口 <b>&gt;</b> を目指そう。</p>
+  <div class="settings">
+    <label>迷宮サイズ <select id="maze-size">
+      <option value="normal">通常（15 × 9）</option>
+      <option value="large">大迷宮（30 × 18）</option>
+    </select></label>
+    <label><input type="checkbox" id="swipe"> スワイプ</label>
+  </div>
   <section class="terminal" aria-label="迷宮">
     <div class="bar"><span>FLOOR 01</span><span id="steps">0 STEPS</span></div>
-    <pre id="map" role="img" aria-label="迷宮マップ"></pre>
+    <div id="map-view" class="map-view">
+      <pre id="map" role="img" aria-label="迷宮マップ"></pre>
+    </div>
     <p id="status" role="status" aria-live="polite">出口を探して探索開始。</p>
   </section>
   <p class="legend"><span><b>@</b> あなた</span><span><b>#</b> 壁</span><span><b>.</b> 通路</span><span><b>&gt;</b> 出口</span></p>
@@ -24,6 +33,6 @@
   <button id="restart" class="restart">↻ リスタート</button>
   <footer>タッチボタン / キーボードの矢印キー<br>リスタートで新しい迷宮をランダム生成。</footer>
 </main>
-<script src="game.js?v=score-1"></script>
+<script src="game.js?v=large-1"></script>
 </html>
 

@@ -1,1 +1,41 @@
 :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#101914;color:#dce8dd}*{box-sizing:border-box}body{margin:0;min-height:100svh;background:radial-gradient(ellipse at 50% 0%,#243b2b 0,transparent 65%)}main{width:min(100%,460px);margin:auto;padding:30px 20px 24px;text-align:center}.eyebrow{font:11px monospace;letter-spacing:3px;color:#97ad99}h1{font:700 clamp(29px,8vw,38px) monospace;letter-spacing:2px;margin:12px 0 16px}h1 span{display:block;font:12px system-ui;letter-spacing:6px;color:#97ad99;margin-top:8px}.intro{font-size:14px;color:#b4c6b6}.intro b,.legend b{color:#d6f699;font-family:monospace}.terminal{border:1px solid #49614a;border-radius:12px;background:#0a110d;padding:0 14px 12px;box-shadow:0 16px 50px #0004}.bar{display:flex;justify-content:space-between;border-bottom:1px solid #293c2c;padding:12px 0;font:11px monospace;letter-spacing:1px;color:#8fa590}pre{font-family:ui-monospace,SFMono-Regular,Consolas,'Liberation Mono',monospace;font-size:clamp(16px,5vw,23px);line-height:1.35;letter-spacing:2px;color:#63826a;margin:20px 0;white-space:pre}.player{color:#e0ffaa;font-weight:bold;text-shadow:0 0 12px #b8ee6c99}.goal{color:#ffd68b;font-weight:bold}#status{font-size:13px;color:#d6f699;min-height:20px;margin:0}.legend{display:flex;justify-content:center;gap:18px;font-size:11px;color:#93aa97;margin:16px 0}.pad{display:grid;grid-template-columns:repeat(3,62px);grid-template-rows:repeat(3,52px);gap:7px;justify-content:center;margin:22px auto 16px}.pad button{background:#23372a;border:1px solid #4d6952;border-radius:10px;color:#e0ffaa;font-size:26px;touch-action:manipulation;user-select:none}.pad button:active{background:#4b663b;transform:translateY(1px)}.pad button[data-dir=up]{grid-area:1/2}.pad button[data-dir=left]{grid-area:2/1}.pad span{grid-area:2/2;align-self:center;color:#687f6b;font:23px monospace}.pad button[data-dir=right]{grid-area:2/3}.pad button[data-dir=down]{grid-area:3/2}button{cursor:pointer}button:focus-visible{outline:3px solid #ffd68b;outline-offset:3px}.restart{background:transparent;color:#d4e1d4;border:1px solid #4d6952;border-radius:8px;padding:12px 24px;font-size:13px;touch-action:manipulation}footer{font-size:11px;line-height:1.8;color:#839b88;margin-top:20px}@media(max-width:350px){main{padding-inline:10px}pre{letter-spacing:1px}.legend{gap:12px}}
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 14px;
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+.settings label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.settings select {
+  font: inherit;
+  color: inherit;
+  background: #23372a;
+  border: 1px solid #4d6952;
+  border-radius: 6px;
+  padding: 6px;
+}
+.settings input { accent-color: #d6f699; }
+.map-view {
+  --map-font-size: clamp(16px, 5vw, 23px);
+  max-height: calc(13.5 * var(--map-font-size));
+  margin: 20px 0;
+  overflow: hidden;
+  overflow-anchor: none;
+}
+.map-view.swipe {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.map-view pre {
+  width: max-content;
+  min-width: 100%;
+  font-size: var(--map-font-size);
+  margin: 0;
+}
